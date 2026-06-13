@@ -11,17 +11,11 @@ const DEFAULT_CONFIG = {
   heroPromesa: "El Mega Pack de Plantillas Excel Más Completo del Mercado",
   heroSubpromesa: "Ahorra cientos de horas de trabajo con herramientas profesionales listas para usar en Finanzas, Recursos Humanos, Ingeniería, Ventas y más.",
   
-  autorNombre: "Equipo Mega Pack",
-  autorProfesion: "Expertos en Gestión Empresarial",
-  autorBio: "Hemos recopilado, optimizado y organizado las mejores plantillas corporativas para que no tengas que empezar ningún proyecto desde cero.",
-
-  // 8 Imágenes proporcionadas por el usuario (Cloudinary)
+  // Imágenes proporcionadas por el usuario
   heroImage: "https://res.cloudinary.com/dcueissks/image/upload/v1781379721/fae383b3-70bc-4272-9425-d7d5428c63e8_sfrccu.png",
   objecionesImage: "https://res.cloudinary.com/dcueissks/image/upload/v1781379721/6e8e805d-25e9-45e1-a76c-e5e751a41c27_avlnam.png",
   metodoImage: "https://res.cloudinary.com/dcueissks/image/upload/v1781379720/614c9e38-6aac-4528-8f77-e1e7d69c1a4a_y3h5aj.png",
   ofertaPaqueteImage: "https://res.cloudinary.com/dcueissks/image/upload/v1781379720/e987a8ff-e89a-4e33-a12c-ee22dbb9ea3f_gfwtx6.png",
-  
-  // Asignamos las demás imágenes a bonos/testimonios/garantía para darles uso
   garantiaImage: "https://res.cloudinary.com/dcueissks/image/upload/v1781379720/b4fec26b-dcaf-46d6-b18a-ab6a9826fd28_nkmqdu.png",
   
   testimonios: [
@@ -30,7 +24,6 @@ const DEFAULT_CONFIG = {
     "https://res.cloudinary.com/dcueissks/image/upload/v1781379720/72cbac34-0ba8-472c-a027-d0e3449149ac_qlma1i.png"
   ],
 
-  // Categorías extraídas de las imágenes del usuario
   categorias: [
     { nombre: "Contabilidad y Finanzas", icon: "fa-calculator", sub: ["Contabilidad", "Facturación", "Estados financieros", "Control Ingresos y Egresos", "Caja", "Relacionadas con impuestos"] },
     { nombre: "Gestión Empresarial", icon: "fa-briefcase", sub: ["Administración", "CRM's", "Planes de Negocio", "Gestión de Ventas", "Recursos Humanos"] },
@@ -90,9 +83,8 @@ function renderContent() {
   if(stickyPrice) stickyPrice.textContent = `(por solo $${config.precioOferta})`;
 
   // Imágenes principales
-  document.getElementById("hero").style.backgroundImage = `url('${config.heroImage}')`;
-  const imgObjeciones = document.getElementById("img-objeciones");
-  if(imgObjeciones) imgObjeciones.src = config.objecionesImage;
+  const heroImg = document.getElementById("hero-img");
+  if(heroImg) heroImg.src = config.heroImage;
   
   const imgMetodo = document.getElementById("img-metodo");
   if(imgMetodo) imgMetodo.src = config.metodoImage;
@@ -107,24 +99,24 @@ function renderContent() {
   const categoriasContainer = document.getElementById("categorias-container");
   if (categoriasContainer) {
     categoriasContainer.innerHTML = '';
-    config.categorias.forEach(cat => {
+    config.categorias.forEach((cat, index) => {
       const card = document.createElement("div");
-      card.className = "glass-card text-left";
-      card.style.padding = "2rem";
-      card.style.borderTop = "4px solid var(--color-accent)";
+      card.className = `glass-card animate-on-scroll`;
+      if(index % 3 === 1) card.classList.add('delay-1');
+      if(index % 3 === 2) card.classList.add('delay-2');
       
       let listHtml = cat.sub.map(item => `
-        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; font-size: 0.95rem;">
-          <i class="fas fa-check-circle" style="color: var(--color-accent); margin-right: 10px; font-size: 0.9rem;"></i> ${item}
+        <li>
+          <i class="fas fa-check"></i> ${item}
         </li>
       `).join('');
 
       card.innerHTML = `
-        <h3 class="font-bold mb-3" style="font-size: 1.25rem; color: #fff; display: flex; align-items: center;">
-          <i class="fas ${cat.icon}" style="color: var(--color-accent); margin-right: 12px; font-size: 1.5rem;"></i>
+        <h3 class="flex align-center">
+          <i class="fas ${cat.icon} text-primary" style="margin-right: 12px; font-size: 1.5rem;"></i>
           ${cat.nombre}
         </h3>
-        <ul style="list-style: none; padding: 0; opacity: 0.9; margin-top: 1.5rem;">
+        <ul style="list-style: none;">
           ${listHtml}
         </ul>
       `;
@@ -136,13 +128,13 @@ function renderContent() {
   const testimoniosContainer = document.getElementById("testimonios-container");
   if (testimoniosContainer) {
     testimoniosContainer.innerHTML = '';
-    config.testimonios.forEach(imgUrl => {
+    config.testimonios.forEach((imgUrl, index) => {
       const img = document.createElement("img");
       img.src = imgUrl;
-      img.alt = "Muestra o Testimonio";
-      img.className = "testimonial-img";
-      img.style.borderRadius = "12px";
-      img.style.boxShadow = "0 8px 30px rgba(0,0,0,0.3)";
+      img.alt = "Testimonio";
+      img.className = "testimonial-img animate-on-scroll";
+      if(index % 3 === 1) img.classList.add('delay-1');
+      if(index % 3 === 2) img.classList.add('delay-2');
       testimoniosContainer.appendChild(img);
     });
   }
@@ -151,19 +143,20 @@ function renderContent() {
   const bonosContainer = document.getElementById("bonos-container");
   if (bonosContainer) {
     bonosContainer.innerHTML = '';
-    config.bonos.forEach(bono => {
+    config.bonos.forEach((bono, index) => {
       const card = document.createElement("div");
-      card.className = "glass-card text-center";
-      card.style.position = "relative";
+      card.className = "glass-card text-center relative animate-on-scroll";
+      if(index % 3 === 1) card.classList.add('delay-1');
+      if(index % 3 === 2) card.classList.add('delay-2');
       
       card.innerHTML = `
         <span class="badge-gratis">GRATIS</span>
-        <img src="${bono.imagen}" alt="${bono.titulo}" class="bono-img" style="border-radius: 8px; margin-bottom: 1rem; width: 100%;">
-        <h3 class="font-bold mb-1" style="font-size: 1.1rem; color: var(--color-accent);">${bono.titulo}</h3>
-        <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.9;">${bono.descripcion}</p>
-        <p style="font-size: 0.85rem;">
-          <span style="text-decoration: line-through; opacity: 0.6;">Precio Normal: ${bono.precioNormal}</span> | 
-          <span style="color: #4ade80; font-weight: bold;">Hoy Gratis</span>
+        <img src="${bono.imagen}" alt="${bono.titulo}" class="bono-img">
+        <h3 class="text-accent mb-1" style="font-size: 1.2rem;">${bono.titulo}</h3>
+        <p class="text-muted mb-1" style="font-size: 0.95rem;">${bono.descripcion}</p>
+        <p style="font-size: 0.9rem;">
+          <span style="text-decoration: line-through; opacity: 0.6; color: var(--color-white);">Valor: ${bono.precioNormal}</span> | 
+          <span class="text-primary font-bold">Hoy Gratis</span>
         </p>
       `;
       bonosContainer.appendChild(card);
@@ -184,7 +177,7 @@ function renderContent() {
           <i class="fas fa-chevron-down faq-icon"></i>
         </button>
         <div class="faq-answer">
-          <p style="padding-bottom: 1.5rem;">${item.respuesta}</p>
+          <p>${item.respuesta}</p>
         </div>
       `;
       
@@ -221,8 +214,30 @@ function initStickyBar() {
   });
 }
 
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        // Opcional: observer.unobserve(entry.target) si solo quieres que se anime una vez
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px"
+  });
+
+  // Re-evaluar todos los elementos
+  setTimeout(() => {
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+  }, 100);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   await loadSiteConfig();
   renderContent();
   initStickyBar();
+  initScrollAnimations();
 });
