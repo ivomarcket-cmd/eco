@@ -24,10 +24,11 @@ export async function onRequestPost(context) {
       date: new Date().toISOString()
     };
 
-    if (env.DB) {
-      let orders = await env.DB.get("orders", "json") || [];
+    const DB = env.SITE_CONFIG_KV || env.DB;
+    if (DB) {
+      let orders = await DB.get("orders", "json") || [];
       orders.push(mockOrder);
-      await env.DB.put("orders", JSON.stringify(orders));
+      await DB.put("orders", JSON.stringify(orders));
     }
 
     return new Response(JSON.stringify({

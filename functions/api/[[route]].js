@@ -13,8 +13,10 @@ export async function onRequest(context) {
     return new Response(null, { headers });
   }
 
+  const DB = env.SITE_CONFIG_KV || env.DB;
+
   // Si DB no está configurado, lanzar error informativo
-  if (!env.DB) {
+  if (!DB) {
     return new Response(JSON.stringify({ error: "La base de datos (DB KV Namespace) no está configurada en Cloudflare." }), { status: 500, headers });
   }
 
@@ -30,19 +32,19 @@ export async function onRequest(context) {
   try {
     if (path.startsWith("/api/config")) {
       if (request.method === "GET") {
-        let config = await env.DB.get("config", "json");
+        let config = await DB.get("config", "json");
         if (!config) config = {};
         return new Response(JSON.stringify(config), { headers });
       } else if (request.method === "POST") {
         checkAuth();
         const data = await request.json();
-        await env.DB.put("config", JSON.stringify(data));
+        await DB.put("config", JSON.stringify(data));
         return new Response(JSON.stringify({ ok: true, config: data }), { headers });
       }
     }
     
     if (path.startsWith("/api/products")) {
-      let products = await env.DB.get("products", "json");
+      let products = await DB.get("products", "json");
       if (!products) products = [];
       
       if (request.method === "GET") {
@@ -57,21 +59,21 @@ export async function onRequest(context) {
            if (idx >= 0) products[idx] = data;
            else products.push(data);
         }
-        await env.DB.put("products", JSON.stringify(products));
+        await DB.put("products", JSON.stringify(products));
         return new Response(JSON.stringify(products), { headers });
       }
     }
     
     if (path.startsWith("/api/portal-products")) {
-       let products = await env.DB.get("products", "json") || [];
-       let config = await env.DB.get("config", "json") || {};
+       let products = await DB.get("products", "json") || [];
+       let config = await DB.get("config", "json") || {};
        return new Response(JSON.stringify({ products: products.filter(p => p.active), config }), { headers });
     }
 
     if (path.startsWith("/api/orders")) {
       if (request.method === "GET") {
         checkAuth();
-        let orders = await env.DB.get("orders", "json") || [];
+        let orders = await DB.get("orders", "json") || [];
         return new Response(JSON.stringify({ 
           orders, 
           stats: { total: orders.length, revenue: orders.reduce((acc, o) => acc + (o.amount || 0), 0), stripe: 0, paypal: 0 } 

@@ -7,7 +7,8 @@ export async function onRequestPost(context) {
   };
 
   try {
-    const config = await env.DB.get("config", "json");
+    const DB = env.SITE_CONFIG_KV || env.DB;
+    const config = await DB.get("config", "json");
     if (!config || !config.stripePublishableKey) {
        throw new Error("Stripe no está configurado.");
     }
