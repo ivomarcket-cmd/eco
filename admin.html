@@ -616,14 +616,10 @@
     });
 
     // --- Auth helpers ---
-    function getPassword() { return ""; }
-    function savePassword() {
-    }
+    function getPassword() { return "ok"; }
+    function savePassword() {}
 
-    function 
-      authStatus.className = "status " + type;
-      authStatus.textContent = msg;
-    }
+    function setAuthStatus(msg, type = "") {}
     function setConfigStatus(msg, type = "") {
       configStatus.className = "status " + type;
       configStatus.textContent = msg;
@@ -669,8 +665,10 @@
     async function verifySavedConfig(expected) {
       for (let attempt = 1; attempt <= 4; attempt += 1) {
         await wait(attempt * 900);
-        const res = await fetch("/api/config", {
-          cache: "no-store"
+        const pw = getPassword();
+        const verifyRes = await fetch("/api/config?verify=" + Date.now(), { 
+          cache: "no-store",
+          headers: pw ? { "x-admin-password": pw } : {}
         });
         if (!verifyRes.ok) continue;
         const verified = await verifyRes.json();
@@ -683,18 +681,23 @@
       const { loadActiveTab = true } = options;
       savePassword();
       try {
-        const res = await fetch("/api/config", {
-          cache: "no-store" 
+        const pw = getPassword();
+        if (!pw) {
+          throw new Error("Contraseña incorrecta.");
+        }
+        const res = await fetch("/api/config", { 
+          cache: "no-store", 
+          headers: pw ? { "x-admin-password": pw } : {} 
         });
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || "No autorizado o error de red.");
+          throw new Error(errData.error || "Contraseña incorrecta o error de red.");
         }
         const cfg = await res.json();
         setForm(cfg);
         
         
-        
+        setAuthStatus("Configuración cargada.", "ok");
         setConfigStatus("Configuración cargada. Puedes editar y guardar.", "ok");
         setReminderStatus("Se han cargado las configuraciones del recordatorio.", "ok");
         if (loadActiveTab) loadActiveTabData();
@@ -704,7 +707,7 @@
       } catch (err) {
         
         
-        
+        setAuthStatus(err.message === "Unauthorized" || err.message.includes("Contraseña") ? "Contraseña incorrecta." : "No se pudo cargar /api/config. Despliega en Cloudflare.", "bad");
         // Even if config fails, try to load products with saved password
         loadProducts();
         loadMessages();
@@ -732,7 +735,7 @@
       try {
         const res = await fetch("/api/config", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify(payload)
         });
         const text = await res.text();
@@ -763,7 +766,7 @@
       if (!pw) return;
       try {
         const res = await fetch("/api/orders", {
-          headers: {},
+          headers: { "x-admin-password": pw },
           cache: "no-store"
         });
         const data = await res.json().catch(() => ({}));
@@ -862,7 +865,7 @@
       if (!pw) return;
       setCartStatus("Cargando cestas…");
       try {
-        const res = await fetch("/api/carts", { headers: {}, cache: "no-store" });
+        const res = await fetch("/api/carts", { headers: { "x-admin-password": pw }, cache: "no-store" });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { setCartStatus("error: " + (data.error || "No se pueden cargar cestas."), "bad"); return; }
         allCarts = data.carts || [];
@@ -930,7 +933,7 @@
       button.disabled = true;
       button.textContent = "Envío…";
       try {
-        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "send-reminder", email }) });
+        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-password": getPassword() }, body: JSON.stringify({ action: "send-reminder", email }) });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { setCartStatus("error: " + (data.error || "No se pudo enviar el recordatorio.."), "bad"); return; }
         setCartStatus("El recordatorio ha sido enviado a " + email + ".", "ok");
@@ -948,7 +951,7 @@
       button.disabled = true;
       button.textContent = "Envío…";
       try {
-        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "send-campaign" }) });
+        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-password": getPassword() }, body: JSON.stringify({ action: "send-campaign" }) });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { setCampaignStatus("error: " + (data.error || "La campaña no se pudo enviar.."), "bad"); return; }
         setCampaignStatus("La campaña ha sido procesada.: " + (data.sent || 0) + " remitente, " + (data.skipped || 0) + " improbable, " + (data.errors || 0) + " errores.", data.errors ? "bad" : "ok");
@@ -981,7 +984,7 @@
       try {
         const res = await fetch("/api/orders", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({
             action: "recover-paypal",
             email,
@@ -1014,7 +1017,7 @@
     }
 
     // --- Events ---
-    document.getElementById("load-btn").addEventListener("click", loadConfig);
+    window.addEventListener("DOMContentLoaded", loadConfig);
     document.getElementById("save-config").addEventListener("click", saveConfig);
     document.getElementById("refresh-orders").addEventListener("click", loadOrders);
     document.getElementById("export-csv").addEventListener("click", exportCsv);
@@ -1046,7 +1049,7 @@
       if (_started || !getPassword()) return;
       _started = true;
       loadConfig().catch(function() {
-        
+        setAuthStatus("No se pudo cargar /api/config.", "bad");
         loadProducts();
       });
     }
@@ -1281,7 +1284,7 @@
       } catch (e) {}
       try {
         const res = await fetch("/api/products", {
-          headers: {},
+          headers: { "x-admin-password": pw },
           cache: "no-store"
         });
         if (!res.ok) { setProdStatus("Error " + res.status + " al cargar productos. Comprueba la contraseña.", "bad"); return; }
@@ -1485,7 +1488,7 @@
         const url = editingProductId ? "/api/products?id=" + encodeURIComponent(editingProductId) : "/api/products";
         const res = await fetch(url, {
           method: editingProductId ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({
             name,
             category: document.getElementById("prod-category").value,
@@ -1522,7 +1525,7 @@
       try {
         const res = await fetch("/api/products?id=" + encodeURIComponent(id), {
           method: "DELETE",
-          headers: {}
+          headers: { "x-admin-password": pw }
         });
         const data = await res.json();
         if (!res.ok) { setProdStatus("Error al borrar: " + (data.error || res.status), "bad"); return; }
@@ -1545,7 +1548,7 @@
       try {
         const res = await fetch("/api/products", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({ type: "category", name })
         });
         const data = await res.json();
@@ -1570,7 +1573,7 @@
       try {
         const res = await fetch("/api/products?category=" + encodeURIComponent(category) + "&fallback=" + encodeURIComponent("Sin categoría"), {
           method: "DELETE",
-          headers: {}
+          headers: { "x-admin-password": pw }
         });
         const data = await res.json();
         if (!res.ok) { setProdStatus("Error al borrar categoría: " + (data.error || res.status), "bad"); return; }
@@ -1597,7 +1600,7 @@
       try {
         const res = await fetch("/api/products", {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({ type: "category", from: category, to: cleanName })
         });
         const data = await res.json();
@@ -1844,7 +1847,7 @@
       list.innerHTML = '<div class="empty-state" style="padding:32px;text-align:center;color:var(--muted)">Cargando mensajes...</div>';
       try {
         const res = await fetch("/api/messages", {
-          headers: {},
+          headers: { "x-admin-password": pw },
           cache: "no-store"
         });
         const data = await res.json().catch(() => ({}));
@@ -1930,7 +1933,7 @@
       try {
         const res = await fetch("/api/messages?id=" + encodeURIComponent(id), {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({ read: !currentlyRead })
         });
         if (!res.ok) return;
@@ -1948,7 +1951,7 @@
       try {
         await fetch("/api/messages?id=" + encodeURIComponent(id), {
           method: "DELETE",
-          headers: {}
+          headers: { "x-admin-password": pw }
         });
         allMessages = allMessages.filter(m => m.id !== id);
         renderMessages();
@@ -1971,7 +1974,7 @@
       try {
         const res = await fetch("/api/messages?id=" + encodeURIComponent(id) + "&action=reply", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({ body: replyBody })
         });
         const data = await res.json().catch(() => ({}));
@@ -2025,7 +2028,7 @@
       try {
         const res = await fetch("/api/messages?action=send", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-password": pw },
           body: JSON.stringify({ email, name, subject, body })
         });
         const data = await res.json().catch(() => ({}));
@@ -2096,7 +2099,7 @@
     // before ANY async events. Shows cached products with zero delay on refresh.
     (function() {
       var pw = readStoredPassword();
-      if (pw) passwordEl.value = pw;
+      
       if (!getPassword()) {
         var lsOk = false; try { lsOk = !!localStorage; } catch(e) {}
         var winPw = ""; try { var _wm = (window.name||"").match(/^adminpw:(.+)/); winPw = _wm ? _wm[1] : ""; } catch(e) {}
