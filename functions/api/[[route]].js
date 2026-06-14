@@ -24,9 +24,18 @@ export async function onRequest(context) {
   
   const checkAuth = () => {
     const pwd = request.headers.get("x-admin-password");
-    if (pwd !== MASTER_PASSWORD) {
-      throw new Error("Unauthorized");
+    if (pwd === MASTER_PASSWORD) return;
+
+    const authHeader = request.headers.get("Authorization");
+    if (authHeader && authHeader.startsWith("Basic ")) {
+      try {
+        const credentials = atob(authHeader.split(" ")[1]);
+        const [username, password] = credentials.split(":");
+        if (password === MASTER_PASSWORD) return;
+      } catch (e) {}
     }
+
+    throw new Error("Unauthorized");
   };
 
   try {
@@ -35,11 +44,10 @@ export async function onRequest(context) {
         let config = await DB.get("config", "json");
         if (!config) config = {};
         
-        const pwd = request.headers.get("x-admin-password");
-        if (pwd) {
+        try {
           checkAuth();
           return new Response(JSON.stringify(config), { headers });
-        } else {
+        } catch(e) {
           const publicConfig = {
             productName: config.productName,
             price: config.price,

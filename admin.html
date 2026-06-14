@@ -168,23 +168,8 @@
       <p><a href="./index.html">Ver landing</a></p>
     </header>
 
-    <!-- Auth row (siempre visible) -->
-    <div class="card" id="auth-row" style="margin-bottom:18px">
-      <div class="bar"></div>
-      <div class="content" style="padding:16px 22px">
-        <div class="login">
-          <label style="margin:0">
-            Contraseña admin
-            <input id="admin-password" type="password" autocomplete="current-password" placeholder="ADMIN_PASSWORD de Cloudflare">
-          </label>
-          <button class="primary" id="load-btn" type="button" style="margin-top:auto">Entrar</button>
-        </div>
-        <div class="status" id="auth-status">Introduce la contraseña y pulsa Entrar.</div>
-      </div>
-    </div>
-
     <!-- DASHBOARD WRAP (Hidden until auth) -->
-    <div id="dashboard-wrap" style="display:none">
+    
     <!-- TABS MENU -->
     <div class="tabs">
       <button class="tab-btn active" data-tab="orders" type="button">🛒 Pedidos</button>
@@ -582,7 +567,7 @@
       </div>
     </div>
 
-    </div> <!-- end dashboard-wrap -->
+    
   </main>
 
   <script>
@@ -598,8 +583,8 @@
     const BOOLEAN_CONFIG_FIELDS = ["orderBumpEnabled", "upsellEnabled"];
 
     let allOrders = [];
-    const passwordEl = document.getElementById("admin-password");
-    const authStatus = document.getElementById("auth-status");
+    
+    
     const configStatus = document.getElementById("config-status");
     const reminderStatus = document.getElementById("reminder-status");
 
@@ -631,20 +616,11 @@
     });
 
     // --- Auth helpers ---
-    function getPassword() { return passwordEl.value.trim(); }
+    function getPassword() { return ""; }
     function savePassword() {
-      var pw = getPassword();
-      if (!pw) return;
-      var saved = [];
-      try { history.replaceState(null, "", "#" + btoa("ap:" + pw)); saved.push("url"); } catch(e) {}
-      try { localStorage.setItem("adminPassword", pw); saved.push("ls"); } catch(e) {}
-      try { sessionStorage.setItem("adminPassword", pw); saved.push("ss"); } catch(e) {}
-      try { document.cookie = "adminpw=" + encodeURIComponent(pw) + ";path=/;max-age=2592000;SameSite=Lax"; saved.push("cookie"); } catch(e) {}
-      try { window.name = "adminpw:" + pw; saved.push("win"); } catch(e) {}
-      setDebug("contraseña guardada en: " + (saved.length ? saved.join("+") : "¡ninguno!"));
     }
 
-    function setAuthStatus(msg, type = "") {
+    function 
       authStatus.className = "status " + type;
       authStatus.textContent = msg;
     }
@@ -693,10 +669,8 @@
     async function verifySavedConfig(expected) {
       for (let attempt = 1; attempt <= 4; attempt += 1) {
         await wait(attempt * 900);
-        const pw = getPassword();
-        const verifyRes = await fetch("/api/config?verify=" + Date.now(), { 
-          cache: "no-store",
-          headers: pw ? { "x-admin-password": pw } : {}
+        const res = await fetch("/api/config", {
+          cache: "no-store"
         });
         if (!verifyRes.ok) continue;
         const verified = await verifyRes.json();
@@ -709,23 +683,18 @@
       const { loadActiveTab = true } = options;
       savePassword();
       try {
-        const pw = getPassword();
-        if (!pw) {
-          throw new Error("Contraseña incorrecta.");
-        }
-        const res = await fetch("/api/config", { 
-          cache: "no-store", 
-          headers: pw ? { "x-admin-password": pw } : {} 
+        const res = await fetch("/api/config", {
+          cache: "no-store" 
         });
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || "Contraseña incorrecta o error de red.");
+          throw new Error(errData.error || "No autorizado o error de red.");
         }
         const cfg = await res.json();
         setForm(cfg);
-        document.getElementById("dashboard-wrap").style.display = "block";
-        document.getElementById("auth-row").style.display = "none";
-        setAuthStatus("Configuración cargada.", "ok");
+        
+        
+        
         setConfigStatus("Configuración cargada. Puedes editar y guardar.", "ok");
         setReminderStatus("Se han cargado las configuraciones del recordatorio.", "ok");
         if (loadActiveTab) loadActiveTabData();
@@ -733,9 +702,9 @@
         loadProducts();
         loadMessages();
       } catch (err) {
-        document.getElementById("dashboard-wrap").style.display = "none";
-        document.getElementById("auth-row").style.display = "block";
-        setAuthStatus(err.message === "Unauthorized" || err.message.includes("Contraseña") ? "Contraseña incorrecta." : "No se pudo cargar /api/config. Despliega en Cloudflare.", "bad");
+        
+        
+        
         // Even if config fails, try to load products with saved password
         loadProducts();
         loadMessages();
@@ -763,7 +732,7 @@
       try {
         const res = await fetch("/api/config", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const text = await res.text();
@@ -794,7 +763,7 @@
       if (!pw) return;
       try {
         const res = await fetch("/api/orders", {
-          headers: { "x-admin-password": pw },
+          headers: {},
           cache: "no-store"
         });
         const data = await res.json().catch(() => ({}));
@@ -893,7 +862,7 @@
       if (!pw) return;
       setCartStatus("Cargando cestas…");
       try {
-        const res = await fetch("/api/carts", { headers: { "x-admin-password": pw }, cache: "no-store" });
+        const res = await fetch("/api/carts", { headers: {}, cache: "no-store" });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { setCartStatus("error: " + (data.error || "No se pueden cargar cestas."), "bad"); return; }
         allCarts = data.carts || [];
@@ -961,7 +930,7 @@
       button.disabled = true;
       button.textContent = "Envío…";
       try {
-        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-password": getPassword() }, body: JSON.stringify({ action: "send-reminder", email }) });
+        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "send-reminder", email }) });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { setCartStatus("error: " + (data.error || "No se pudo enviar el recordatorio.."), "bad"); return; }
         setCartStatus("El recordatorio ha sido enviado a " + email + ".", "ok");
@@ -979,7 +948,7 @@
       button.disabled = true;
       button.textContent = "Envío…";
       try {
-        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-password": getPassword() }, body: JSON.stringify({ action: "send-campaign" }) });
+        const res = await fetch("/api/carts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "send-campaign" }) });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { setCampaignStatus("error: " + (data.error || "La campaña no se pudo enviar.."), "bad"); return; }
         setCampaignStatus("La campaña ha sido procesada.: " + (data.sent || 0) + " remitente, " + (data.skipped || 0) + " improbable, " + (data.errors || 0) + " errores.", data.errors ? "bad" : "ok");
@@ -1012,7 +981,7 @@
       try {
         const res = await fetch("/api/orders", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             action: "recover-paypal",
             email,
@@ -1077,7 +1046,7 @@
       if (_started || !getPassword()) return;
       _started = true;
       loadConfig().catch(function() {
-        setAuthStatus("No se pudo cargar /api/config.", "bad");
+        
         loadProducts();
       });
     }
@@ -1312,7 +1281,7 @@
       } catch (e) {}
       try {
         const res = await fetch("/api/products", {
-          headers: { "x-admin-password": pw },
+          headers: {},
           cache: "no-store"
         });
         if (!res.ok) { setProdStatus("Error " + res.status + " al cargar productos. Comprueba la contraseña.", "bad"); return; }
@@ -1516,7 +1485,7 @@
         const url = editingProductId ? "/api/products?id=" + encodeURIComponent(editingProductId) : "/api/products";
         const res = await fetch(url, {
           method: editingProductId ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name,
             category: document.getElementById("prod-category").value,
@@ -1553,7 +1522,7 @@
       try {
         const res = await fetch("/api/products?id=" + encodeURIComponent(id), {
           method: "DELETE",
-          headers: { "x-admin-password": pw }
+          headers: {}
         });
         const data = await res.json();
         if (!res.ok) { setProdStatus("Error al borrar: " + (data.error || res.status), "bad"); return; }
@@ -1576,7 +1545,7 @@
       try {
         const res = await fetch("/api/products", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ type: "category", name })
         });
         const data = await res.json();
@@ -1601,7 +1570,7 @@
       try {
         const res = await fetch("/api/products?category=" + encodeURIComponent(category) + "&fallback=" + encodeURIComponent("Sin categoría"), {
           method: "DELETE",
-          headers: { "x-admin-password": pw }
+          headers: {}
         });
         const data = await res.json();
         if (!res.ok) { setProdStatus("Error al borrar categoría: " + (data.error || res.status), "bad"); return; }
@@ -1628,7 +1597,7 @@
       try {
         const res = await fetch("/api/products", {
           method: "PUT",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ type: "category", from: category, to: cleanName })
         });
         const data = await res.json();
@@ -1875,7 +1844,7 @@
       list.innerHTML = '<div class="empty-state" style="padding:32px;text-align:center;color:var(--muted)">Cargando mensajes...</div>';
       try {
         const res = await fetch("/api/messages", {
-          headers: { "x-admin-password": pw },
+          headers: {},
           cache: "no-store"
         });
         const data = await res.json().catch(() => ({}));
@@ -1961,7 +1930,7 @@
       try {
         const res = await fetch("/api/messages?id=" + encodeURIComponent(id), {
           method: "PATCH",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ read: !currentlyRead })
         });
         if (!res.ok) return;
@@ -1979,7 +1948,7 @@
       try {
         await fetch("/api/messages?id=" + encodeURIComponent(id), {
           method: "DELETE",
-          headers: { "x-admin-password": pw }
+          headers: {}
         });
         allMessages = allMessages.filter(m => m.id !== id);
         renderMessages();
@@ -2002,7 +1971,7 @@
       try {
         const res = await fetch("/api/messages?id=" + encodeURIComponent(id) + "&action=reply", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ body: replyBody })
         });
         const data = await res.json().catch(() => ({}));
@@ -2056,7 +2025,7 @@
       try {
         const res = await fetch("/api/messages?action=send", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-password": pw },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, name, subject, body })
         });
         const data = await res.json().catch(() => ({}));
