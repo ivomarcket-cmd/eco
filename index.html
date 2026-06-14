@@ -16,170 +16,219 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <!-- Top Banner -->
   <div class="top-banner">
     <div class="container text-center">
-      <p style="margin:0; font-size: 0.95rem;">
+      <p style="margin:0; font-size: 0.95rem; font-weight: 600;">
         <span class="pulse-dot"></span> OFERTA ESPECIAL: DESCUENTO ACTIVO SOLO POR HOY
       </p>
     </div>
   </div>
 
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-container">
+      <div class="logo">
+        <span style="font-family: var(--font-headings); font-weight: 800; font-size: 1.4rem; color: var(--color-white); letter-spacing: 1px;">MEGA<span class="text-accent">PACK</span></span>
+      </div>
+      <div class="nav-links">
+        <a href="#contenido" class="nav-link hidden-mobile">¿Qué Incluye?</a>
+        <a href="#bonos" class="nav-link hidden-mobile">Bonos</a>
+        <a href="#" class="btn-action nav-btn dynamic-checkout-link btn-small">Obtener Acceso</a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Hero Section -->
   <header class="hero" id="hero">
-    <div class="hero-overlay"></div>
-    <div class="container relative z-10 hero-content text-center">
-      <div class="badge mx-auto mb-1">ACCESO INMEDIATO 24/7</div>
-      <h1 class="font-bold mb-1 fade-in-up" id="text-hero-promesa" style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem;">
-        El Mega Pack de Plantillas Excel Más Completo del Mercado
-      </h1>
-      <p class="hero-subtitle mx-auto mb-2 fade-in-up" id="text-hero-subpromesa" style="font-size: 1.25rem; opacity: 0.9; max-width: 800px;">
-        Ahorra cientos de horas de trabajo con herramientas profesionales listas para usar en Finanzas, Recursos Humanos, Ingeniería, Ventas y más.
-      </p>
-      
-      <div class="price-box mb-2 fade-in-up" style="display: inline-block; background: rgba(0,0,0,0.4); padding: 10px 25px; border-radius: 50px; border: 1px solid rgba(255,215,0,0.3);">
-        <span style="text-decoration: line-through; opacity: 0.6; font-size: 1.1rem; margin-right: 15px;" id="text-precio-normal">$102</span>
-        <span class="gold font-bold" style="font-size: 1.8rem;" id="text-precio-oferta">$12</span>
-      </div>
+    <div class="hero-bg-overlay"></div>
+    <div class="container hero-container relative z-10">
+      <div class="hero-content animate-on-scroll">
+        <div class="badge mb-1">ACCESO INMEDIATO 24/7</div>
+        <h1 class="hero-title" id="text-hero-promesa">
+          El Mega Pack de Plantillas Excel Más Completo del Mercado
+        </h1>
+        <p class="hero-subtitle" id="text-hero-subpromesa">
+          Ahorra cientos de horas de trabajo con herramientas profesionales listas para usar en Finanzas, Recursos Humanos, Ingeniería, Ventas y más.
+        </p>
+        
+        <div class="price-box mb-2">
+          <span class="precio-tachado" id="text-precio-normal">$102</span>
+          <span class="precio-destacado" id="text-precio-oferta">$12</span>
+        </div>
 
-      <div class="cta-wrapper fade-in-up">
-        <a href="#" class="btn btn-primary dynamic-checkout-link">QUIERO DESCARGAR EL MEGA PACK AHORA</a>
-        <p class="secure-text mt-1"><i class="fas fa-lock"></i> Pago 100% Seguro y Encriptado</p>
+        <div class="cta-wrapper">
+          <a href="#" class="btn-action pulse dynamic-checkout-link">QUIERO DESCARGAR EL MEGA PACK AHORA</a>
+          <p class="secure-text mt-1"><i class="fas fa-lock"></i> Pago 100% Seguro y Encriptado</p>
+        </div>
+      </div>
+      
+      <div class="hero-image-wrapper animate-on-scroll delay-1">
+        <div class="image-glow"></div>
+        <img src="" id="hero-img" alt="Mega Pack Excel" class="hero-image">
       </div>
     </div>
   </header>
 
-  <!-- ¿Qué incluye la Colección? (Categorías Inyectadas) -->
-  <section class="section">
+  <!-- Social Proof Ribbon -->
+  <div class="social-proof-ribbon">
+    <div class="container social-proof-container">
+      <span><i class="fab fa-windows"></i> Compatible con Windows</span>
+      <span class="dot-separator">•</span>
+      <span><i class="fab fa-apple"></i> Compatible con Mac</span>
+      <span class="dot-separator">•</span>
+      <span><i class="fas fa-file-excel"></i> Hojas 100% Editables</span>
+      <span class="dot-separator">•</span>
+      <span><i class="fas fa-cloud"></i> También en Google Sheets</span>
+    </div>
+  </div>
+
+  <!-- ¿Qué incluye la Colección? -->
+  <section class="section" id="contenido">
     <div class="container">
-      <div class="section-title text-center mb-3">
-        <h2>¿Qué encontrarás en este <span class="gold">Mega Pack</span>?</h2>
-        <p style="font-size: 1.2rem; max-width: 700px; margin: 1rem auto 0; opacity: 0.8;">Más de 20 categorías profesionales organizadas meticulosamente. Nunca más empezarás una hoja de cálculo desde cero.</p>
+      <div class="section-title text-center mb-3 animate-on-scroll">
+        <h2>¿Qué encontrarás en este <span class="text-accent">Mega Pack</span>?</h2>
+        <p class="subtitle">Más de 20 categorías profesionales organizadas meticulosamente. Nunca más empezarás una hoja de cálculo desde cero.</p>
       </div>
       
       <!-- Contenedor dinámico de categorías (script.js lo llena) -->
-      <div class="grid-3" id="categorias-container" style="gap: 1.5rem;">
+      <div class="grid-3" id="categorias-container">
         <!-- Categorías se inyectan aquí -->
       </div>
     </div>
   </section>
 
   <!-- Imagen Principal de la Oferta / Método -->
-  <section class="section" style="background: rgba(10, 10, 10, 0.4);">
+  <section class="section bg-darker">
     <div class="container">
       <div class="grid-2 align-center">
-        <div>
-          <h2>Todo lo que necesitas, a <span class="gold">un clic de distancia</span></h2>
-          <p class="mb-1" style="font-size: 1.1rem; opacity: 0.9; line-height: 1.8;">Hemos eliminado la curva de aprendizaje. Nuestras plantillas están pre-configuradas con fórmulas avanzadas, macros y paneles de control (dashboards) listos para que solo introduzcas tus datos.</p>
-          <ul class="beneficios-list mt-2">
-            <li><i class="fas fa-check"></i> Descarga inmediata tras el pago</li>
-            <li><i class="fas fa-check"></i> Archivos 100% editables (.xlsx)</li>
-            <li><i class="fas fa-check"></i> Compatibles con Mac, PC y Google Sheets</li>
-            <li><i class="fas fa-check"></i> Sin pagos mensuales ni suscripciones</li>
+        <div class="animate-on-scroll">
+          <h2 class="section-heading mb-1" style="font-family: var(--font-headings); font-size: 2.5rem;">Todo lo que necesitas, a <span class="text-accent">un clic de distancia</span></h2>
+          <p class="text-muted mb-2">Hemos eliminado la curva de aprendizaje. Nuestras plantillas están pre-configuradas con fórmulas avanzadas, macros y paneles de control (dashboards) listos para que solo introduzcas tus datos.</p>
+          <ul class="check-list mt-2">
+            <li><i class="fas fa-check-circle"></i> Descarga inmediata tras el pago</li>
+            <li><i class="fas fa-check-circle"></i> Archivos 100% editables (.xlsx)</li>
+            <li><i class="fas fa-check-circle"></i> Compatibles con Mac, PC y Google Sheets</li>
+            <li><i class="fas fa-check-circle"></i> Sin pagos mensuales ni suscripciones</li>
           </ul>
         </div>
-        <div>
-          <img src="" id="img-metodo" alt="Estructura del Pack" style="width: 100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+        <div class="animate-on-scroll delay-1">
+          <div class="floating-image-container relative">
+             <div class="image-glow"></div>
+             <img src="" id="img-metodo" alt="Estructura del Pack" class="img-fluid rounded-xl shadow-glow relative z-10" style="width:100%;">
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Bonos Exclusivos -->
-  <section class="section" style="background: var(--color-bg); position: relative; overflow: hidden;">
-    <!-- Elemento decorativo -->
-    <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: var(--color-accent); filter: blur(150px); opacity: 0.1; z-index: 0;"></div>
+  <section class="section section-bonos relative overflow-hidden" id="bonos">
+    <!-- Elementos decorativos radiales -->
+    <div class="bg-glow-accent top-left"></div>
+    <div class="bg-glow-primary bottom-right"></div>
     
     <div class="container relative z-10">
-      <div class="section-title text-center mb-3">
-        <h2>Además, llévate <span class="gold">3 Regalos Exclusivos</span></h2>
-        <p>Solo si aprovechas la oferta de hoy, incluimos esta biblioteca de eBooks complementaria.</p>
+      <div class="section-title text-center mb-3 animate-on-scroll">
+        <h2>Además, llévate <span class="text-accent">3 Regalos Exclusivos</span></h2>
+        <p class="subtitle">Solo si aprovechas la oferta de hoy, incluimos esta biblioteca de eBooks complementaria.</p>
       </div>
       
       <div class="grid-3 mt-2" id="bonos-container">
         <!-- Los bonos se inyectan dinámicamente -->
       </div>
       
-      <div class="text-center mt-3">
-        <a href="#" class="btn btn-primary dynamic-checkout-link">DESBLOQUEAR EL PACK + LOS 3 REGALOS</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Oferta Irresistible -->
-  <section class="section text-center">
-    <div class="container" style="max-width: 900px;">
-      <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">La Oferta <span class="gold">Definitiva</span></h2>
-      <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">No pagues suscripciones de software caras. Descarga hoy todo el arsenal por una fracción de su valor real.</p>
-      
-      <img src="" id="img-oferta" alt="Oferta Completa" style="max-width: 100%; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(212,175,55,0.15);">
-      
-      <div class="cta-wrapper">
-        <a href="#" class="btn btn-primary pulse dynamic-checkout-link" style="font-size: 1.3rem; padding: 1.2rem 3rem;">OBTENER ACCESO TOTAL AHORA</a>
+      <div class="text-center mt-3 animate-on-scroll">
+        <a href="#" class="btn-action dynamic-checkout-link">DESBLOQUEAR EL PACK + LOS 3 REGALOS</a>
       </div>
     </div>
   </section>
 
   <!-- Testimonios -->
-  <section class="section" style="background: rgba(10, 10, 10, 0.4);">
+  <section class="section bg-darker">
     <div class="container">
-      <div class="section-title text-center mb-3">
-        <h2>Lo que dicen <span class="gold">quienes ya lo usan</span></h2>
+      <div class="section-title text-center mb-3 animate-on-scroll">
+        <h2>Lo que dicen <span class="text-accent">quienes ya lo usan</span></h2>
       </div>
       
-      <div class="grid-3" id="testimonios-container" style="gap: 2rem; align-items: start;">
+      <div class="grid-3 testimonios-grid" id="testimonios-container">
         <!-- Testimonios se inyectan aquí -->
       </div>
     </div>
   </section>
 
-  <!-- Garantía -->
-  <section class="section" style="padding: 4rem 0;">
-    <div class="container">
-      <div class="garantia-box flex-center" style="background: linear-gradient(135deg, rgba(20,20,20,1) 0%, rgba(30,30,30,1) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 3rem;">
-        <div style="flex: 0 0 150px; text-align: center;">
-          <img src="" id="img-garantia" alt="Garantía" style="width: 120px;">
+  <!-- Oferta Irresistible -->
+  <section class="section text-center relative">
+    <!-- Glow -->
+    <div class="bg-glow-primary" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+
+    <div class="container max-w-lg relative z-10">
+      <div class="animate-on-scroll">
+        <h2 class="oferta-heading mb-1">La Oferta <span class="text-accent">Definitiva</span></h2>
+        <p class="text-muted mb-2">No pagues suscripciones de software caras. Descarga hoy todo el arsenal por una fracción de su valor real.</p>
+        
+        <img src="" id="img-oferta" alt="Oferta Completa" class="oferta-image mb-2">
+        
+        <div class="cta-wrapper mt-2">
+          <a href="#" class="btn-action pulse dynamic-checkout-link btn-large" style="width: 100%;">OBTENER ACCESO TOTAL AHORA</a>
         </div>
-        <div style="flex: 1; padding-left: 2rem;">
-          <h2 class="mb-1">Garantía de <span class="gold">Satisfacción</span></h2>
-          <p style="opacity: 0.9; line-height: 1.6;">Estamos tan seguros de la inmensa calidad y valor de estas plantillas que te ofrecemos una política de cero riesgos. Si los archivos están corruptos o el material no es lo prometido, tienes nuestro soporte inmediato.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Garantía -->
+  <section class="section bg-darker pb-4">
+    <div class="container">
+      <div class="garantia-box flex-center glass-card animate-on-scroll">
+        <div class="garantia-img-wrapper">
+          <img src="" id="img-garantia" alt="Garantía" class="img-fluid pulse-slow">
+        </div>
+        <div class="garantia-content">
+          <h2 class="mb-1" style="font-family: var(--font-headings); font-size: 2.2rem;">Garantía de <span class="text-accent">Satisfacción</span></h2>
+          <p class="text-muted">Estamos tan seguros de la inmensa calidad y valor de estas plantillas que te ofrecemos una política de cero riesgos. Si los archivos están corruptos o el material no es lo prometido, tienes nuestro soporte inmediato.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="section" style="background: var(--color-bg);">
-    <div class="container" style="max-width: 800px;">
-      <div class="section-title text-center mb-3">
-        <h2>Preguntas <span class="gold">Frecuentes</span></h2>
+  <section class="section">
+    <div class="container max-w-md">
+      <div class="section-title text-center mb-3 animate-on-scroll">
+        <h2>Preguntas <span class="text-accent">Frecuentes</span></h2>
       </div>
-      <div class="faq-container" id="faq-container">
+      <div class="faq-container animate-on-scroll" id="faq-container">
         <!-- FAQ se inyecta aquí -->
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer style="background: #000; padding: 3rem 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05);">
+  <footer class="footer text-center">
     <div class="container">
-      <img id="img-logo" src="https://i.postimg.cc/KjJ5B6pd/LOGO-1.png" alt="Logo" style="width: 150px; margin-bottom: 1.5rem; filter: grayscale(100%); opacity: 0.5;">
-      <p style="opacity: 0.5; font-size: 0.9rem;">&copy; 2026 Mega Pack Excel. Todos los derechos reservados.</p>
+      <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="terms.html" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease;" onmouseover="this.style.color='#10B981'" onmouseout="this.style.color='var(--color-text-muted)'">Términos y Condiciones</a>
+        <a href="privacy.html" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease;" onmouseover="this.style.color='#10B981'" onmouseout="this.style.color='var(--color-text-muted)'">Política de Privacidad</a>
+        <a href="refund.html" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease;" onmouseover="this.style.color='#10B981'" onmouseout="this.style.color='var(--color-text-muted)'">Política de Reembolso</a>
+        <a href="delivery.html" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease;" onmouseover="this.style.color='#10B981'" onmouseout="this.style.color='var(--color-text-muted)'">Política de Entrega</a>
+        <a href="contact.html" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease;" onmouseover="this.style.color='#10B981'" onmouseout="this.style.color='var(--color-text-muted)'">Contacto</a>
+      </div>
+      <p class="footer-text">&copy; 2026 Mega Pack Excel. Todos los derechos reservados.</p>
     </div>
   </footer>
 
   <!-- Sticky Bar para Móviles -->
   <div class="mobile-sticky-bar" id="mobile-sticky-bar">
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <div class="sticky-content">
       <div>
-        <span class="gold font-bold" style="font-size: 1.2rem;">Oferta Especial</span><br>
-        <span id="sticky-price" style="font-size: 0.85rem; opacity: 0.8;"></span>
+        <span class="text-accent font-bold" style="font-size: 1.1rem; line-height: 1;">Oferta Especial</span><br>
+        <span id="sticky-price" class="text-muted" style="font-size: 0.85rem;"></span>
       </div>
-      <a href="#" class="btn btn-primary dynamic-checkout-link" style="padding: 10px 20px; font-size: 0.9rem;">¡Lo Quiero!</a>
+      <a href="#" class="btn-action btn-small dynamic-checkout-link" style="padding: 10px 20px;">¡Lo Quiero!</a>
     </div>
   </div>
 
