@@ -597,7 +597,6 @@
       try { var wm = (window.name || "").match(/^adminpw:(.+)/); if (wm) return wm[1]; } catch(e) {}
       return "";
     }
-    passwordEl.value = readStoredPassword();
 
     // --- Tabs ---
     document.querySelectorAll(".tab-btn").forEach((btn) => {
